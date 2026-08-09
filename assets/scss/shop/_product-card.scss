@@ -20,35 +20,65 @@
 		transition: transform 0.4s ease;
 	}
 
-	// Кнопка «Add to cart» виїжджає знизу при наведенні.
+	// Кнопка «В кошик» виїжджає знизу при наведенні.
+	// Всередині — посилання, яке друкує WooCommerce, тому оформлюємо
+	// не сам блок, а вкладену кнопку.
 	&__add {
 		position: absolute;
 		right: $space-md;
 		bottom: $space-md;
 		left: $space-md;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: $space-sm;
-		padding: 0.6rem $space-md;
-		font-size: $fs-xs;
-		letter-spacing: $ls-wide;
-		text-transform: uppercase;
-		color: $color-white;
-		background-color: $color-dark;
-		border-radius: $radius;
 		opacity: 0;
 		transform: translateY(120%);
 		transition: transform $transition, opacity $transition;
+
+		.button {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: $space-sm;
+			padding: 0.6rem $space-md;
+			font-size: $fs-xs;
+			letter-spacing: $ls-wide;
+			text-transform: uppercase;
+			text-align: center;
+			color: $color-white;
+			background-color: $color-dark;
+			border-radius: $radius;
+			transition: background-color $transition;
+
+			&:hover {
+				color: $color-white;
+				background-color: $color-primary;
+			}
+
+			// Woo вішає цей клас на час запиту.
+			&.loading {
+				opacity: 0.6;
+				pointer-events: none;
+			}
+		}
+
+		// Посилання «Переглянути кошик» після успішного додавання.
+		.added_to_cart {
+			display: block;
+			margin-top: $space-xs;
+			font-size: $fs-xs;
+			letter-spacing: $ls-wide;
+			text-transform: uppercase;
+			text-align: center;
+			color: $color-white;
+			text-decoration: underline;
+		}
 	}
 
 	&__media:hover &__image,
-	&__media:focus-visible &__image {
+	&__media:focus-within &__image {
 		transform: scale(1.04);
 	}
 
 	&__media:hover &__add,
-	&__media:focus-visible &__add {
+	&__media:focus-within &__add {
 		opacity: 1;
 		transform: translateY(0);
 	}

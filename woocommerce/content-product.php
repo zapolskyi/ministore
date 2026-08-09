@@ -30,25 +30,51 @@ if ( ! $product_image ) {
 ?>
 
 <li class="product-card">
-	<a class="product-card__media" href="<?php the_permalink(); ?>">
-		<img
-			class="product-card__image"
-			src="<?php echo esc_url( $product_image ); ?>"
-			alt="<?php echo esc_attr( $product_title ); ?>"
-			width="600"
-			height="600"
-			loading="lazy"
-		>
 
-		<span class="product-card__add">
-			Add to cart
-			<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-				<path d="M3 4h2.5l2 12h11l2-8H7" stroke-linecap="round" stroke-linejoin="round"/>
-				<circle cx="9.5" cy="20" r="1.4" fill="currentColor" stroke="none"/>
-				<circle cx="17.5" cy="20" r="1.4" fill="currentColor" stroke="none"/>
-			</svg>
-		</span>
-	</a>
+	<?php
+	/**
+	 * Обгортка зображення — <div>, а не <a>.
+	 *
+	 * Кнопку «В кошик» друкує WooCommerce, і це посилання <a>.
+	 * Посилання всередині посилання — невалідний HTML: браузер розриває
+	 * розмітку по-своєму, і клік починає працювати непередбачувано.
+	 */
+	?>
+	<div class="product-card__media">
+
+		<?php
+		// Зображення теж веде на товар, але з навігації клавіатурою прибране:
+		// нижче є посилання на назві, і два таби на один товар зайві.
+		?>
+		<a class="product-card__link" href="<?php the_permalink(); ?>" tabindex="-1" aria-hidden="true">
+			<img
+				class="product-card__image"
+				src="<?php echo esc_url( $product_image ); ?>"
+				alt="<?php echo esc_attr( $product_title ); ?>"
+				width="600"
+				height="600"
+				loading="lazy"
+			>
+		</a>
+
+		<div class="product-card__add">
+			<?php
+			/**
+			 * Справжня кнопка WooCommerce.
+			 *
+			 * Вона сама вміє все, що нам потрібно:
+			 *   • додає товар без перезавантаження сторінки (AJAX);
+			 *   • для варіативного товару веде на сторінку вибору, а не додає наосліп;
+			 *   • ховається, якщо товару немає в наявності;
+			 *   • після додавання показує посилання «Переглянути кошик».
+			 *
+			 * Писати це руками означало б переписати add-to-cart.js.
+			 */
+			woocommerce_template_loop_add_to_cart();
+			?>
+		</div>
+
+	</div>
 
 	<div class="product-card__info">
 		<h3 class="product-card__title">

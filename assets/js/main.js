@@ -328,6 +328,47 @@
 		});
 	}
 
+	/**
+	 * Перемикання блоків доставки на оформленні.
+	 *
+	 * Радіокнопка несе data-shipping-toggle зі значенням, а блоки полів —
+	 * data-shipping-fields. Показуємо той блок, значення якого збіглося.
+	 *
+	 * Це суто стан інтерфейсу, тому чистий JS без участі сервера.
+	 * Коли підключимо реальні способи доставки, сюди прийдуть значення
+	 * з зони доставки, а логіка перемикання лишиться та сама.
+	 */
+	function initCheckoutShipping() {
+		const toggles = document.querySelectorAll('[data-shipping-toggle]');
+		const blocks = document.querySelectorAll('[data-shipping-fields]');
+
+		if (toggles.length === 0 || blocks.length === 0) {
+			return;
+		}
+
+		function sync() {
+			const checked = document.querySelector('[data-shipping-toggle]:checked');
+			const active = checked ? checked.dataset.shippingToggle : null;
+
+			blocks.forEach(function (block) {
+				const isActive = block.dataset.shippingFields === active;
+
+				block.hidden = !isActive;
+
+				// Приховані поля не мають блокувати відправку форми.
+				block.querySelectorAll('[required]').forEach(function (field) {
+					field.disabled = !isActive;
+				});
+			});
+		}
+
+		toggles.forEach(function (toggle) {
+			toggle.addEventListener('change', sync);
+		});
+
+		sync();
+	}
+
 	// Скрипт підключений з defer, тому DOM уже готовий на момент запуску.
 	initBurger();
 	initMobileSubmenu();
@@ -335,4 +376,5 @@
 	initVariationSwatches();
 	initTabs();
 	initSliders();
+	initCheckoutShipping();
 })();

@@ -1,0 +1,147 @@
+// =============================================================================
+// Сторінка оформлення замовлення
+// =============================================================================
+
+@use '../abstracts' as *;
+
+.checkout-page {
+	padding-block: $space-xl $space-2xl;
+
+	&__cols {
+		display: grid;
+		gap: $space-2xl;
+
+		@include respond-to('md') {
+			grid-template-columns: 1fr 1fr;
+			gap: $space-3xl;
+		}
+	}
+
+	&__title {
+		@include heading-uppercase($fs-md, $fw-light);
+
+		margin-bottom: $space-lg;
+		letter-spacing: $ls-wide;
+	}
+
+	&__submit {
+		margin-top: $space-lg;
+	}
+}
+
+// -- Поля форми -------------------------------------------------------------------
+
+.form-row {
+	margin-bottom: $space-md;
+
+	label {
+		display: block;
+		margin-bottom: $space-xs;
+		font-size: $fs-xs;
+		color: $color-muted;
+	}
+
+	.required {
+		color: $color-primary;
+		text-decoration: none;
+	}
+
+	input[type='text'],
+	input[type='tel'],
+	input[type='email'],
+	input[type='number'],
+	input[type='password'],
+	select,
+	textarea {
+		width: 100%;
+		padding: 0.7rem $space-md;
+		font-size: $fs-sm;
+		color: $color-text;
+		background-color: $color-white;
+		border: 1px solid $color-border;
+		border-radius: $radius;
+		transition: border-color $transition;
+
+		&::placeholder {
+			color: $color-muted;
+		}
+
+		&:focus {
+			outline: none;
+			border-color: $color-primary;
+		}
+	}
+
+	textarea {
+		resize: vertical;
+	}
+}
+
+// -- Радіокнопки: доставка й оплата ------------------------------------------------
+
+.radio-option {
+	display: flex;
+	align-items: center;
+	gap: $space-sm;
+	padding-block: $space-xs;
+	font-size: $fs-sm;
+	cursor: pointer;
+
+	input[type='radio'] {
+		width: 14px;
+		height: 14px;
+		accent-color: $color-primary;
+		cursor: pointer;
+	}
+
+	&__label {
+		color: $color-text;
+	}
+
+	// Обраний варіант підсвічуємо — :has читає стан вкладеного input.
+	&:has(input:checked) &__label {
+		color: $color-primary;
+	}
+}
+
+// -- Спосіб доставки ---------------------------------------------------------------
+
+.checkout-shipping {
+	margin-top: $space-2xl;
+
+	&__methods {
+		display: flex;
+		flex-wrap: wrap;
+		gap: $space-lg;
+		margin-bottom: $space-lg;
+	}
+
+	&__fields {
+		max-width: 420px;
+
+		// Блок ховає атрибут hidden, який перемикає JS.
+		&[hidden] {
+			display: none;
+		}
+	}
+
+	&__pickup-address {
+		padding: $space-md $space-lg;
+		font-size: $fs-sm;
+		line-height: $lh-base;
+		color: $color-text;
+		background-color: $color-bg-soft;
+		border-left: 3px solid $color-primary;
+	}
+}
+
+// -- Підсумки й оплата --------------------------------------------------------------
+// Таблиця підсумків — той самий блок, що в кошику (shop/_cart.scss).
+
+.checkout-totals {
+	margin-top: $space-2xl;
+}
+
+.checkout-payment {
+	margin-top: $space-lg;
+}

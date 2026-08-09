@@ -1,0 +1,23 @@
+/*
+Theme Name: MiniStore
+Theme URI: https://example.com/
+Author: Nazar Zapolski
+Description: Класична тема інтернет-магазину на WordPress + WooCommerce. Верстка з нуля, BEM + SCSS, ванільний JS.
+Version: 0.1.0
+Requires at least: 6.5
+Tested up to: 7.0
+Requires PHP: 8.1
+License: GNU General Public License v2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: my-theme
+Tags: e-commerce, custom-menu, translation-ready
+*/
+
+/*
+ * УВАГА: правил стилю тут немає і не буде.
+ * Цей файл — «паспорт» теми: WordPress читає лише коментар угорі,
+ * щоб показати тему в адмінці.
+ *
+ * Реальні стилі збираються з assets/scss/ у assets/css/style.css
+ * командою `npm run scss`. Саме той файл підключається в inc/enqueue.php.
+ */

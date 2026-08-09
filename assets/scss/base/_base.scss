@@ -1,0 +1,30 @@
+// =============================================================================
+// Базові стилі документа
+// =============================================================================
+
+@use '../abstracts' as *;
+
+html {
+	scroll-behavior: smooth;
+}
+
+body {
+	font-family: $font-primary;
+	font-size: $fs-base;
+	font-weight: $fw-regular;
+	line-height: $lh-base;
+	color: $color-text;
+	background-color: $color-white;
+	-webkit-font-smoothing: antialiased;
+}
+
+// Видима рамка фокуса — обов'язкова для тих, хто ходить сайтом з клавіатури.
+// :focus-visible показує її тільки при керуванні клавіатурою, не при кліку мишею.
+:focus-visible {
+	outline: 2px solid $color-primary;
+	outline-offset: 2px;
+}
+
+.site-main {
+	padding-bottom: $space-2xl;
+}

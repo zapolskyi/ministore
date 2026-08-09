@@ -1,0 +1,88 @@
+// =============================================================================
+// Каталог: розкладка, панель сортування, сітка, бічні фільтри
+// =============================================================================
+
+@use '../abstracts' as *;
+
+.shop {
+
+	&__layout {
+		display: grid;
+		gap: $space-2xl;
+
+		@include respond-to('lg') {
+			// Основна колонка гнучка, бічна — фіксовані 250px.
+			grid-template-columns: 1fr 250px;
+			gap: $space-xl;
+		}
+	}
+
+	&__toolbar {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: $space-sm;
+		margin-bottom: $space-lg;
+	}
+
+	// Лічильник результатів і сортування малює сам WooCommerce —
+	// їхні стилі в shop/_woocommerce-overrides.scss.
+}
+
+// -- Сітка товарів ------------------------------------------------------------
+
+.product-grid {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: $space-lg;
+
+	@include respond-to('md') {
+		grid-template-columns: repeat(3, 1fr);
+	}
+}
+
+// -- Бічна панель -------------------------------------------------------------
+
+.shop-sidebar {
+	display: flex;
+	flex-direction: column;
+	gap: $space-xl;
+}
+
+.widget {
+
+	&__title {
+		@include heading-uppercase($fs-sm, $fw-medium);
+		@include underline;
+
+		display: inline-block;
+		margin-bottom: $space-md;
+	}
+
+	&__list {
+		display: flex;
+		flex-direction: column;
+		gap: $space-xs;
+	}
+
+	&__link {
+		font-size: $fs-sm;
+		color: $color-text;
+
+		&:hover,
+		&--active {
+			color: $color-primary;
+		}
+
+		// Ціна виводиться через wc_price() — вона загортає суму у свій <span>.
+		.woocommerce-Price-amount {
+			color: inherit;
+		}
+
+		// «Скинути фільтр» — другорядна дія, тому приглушена.
+		&--reset {
+			color: $color-muted;
+		}
+	}
+}

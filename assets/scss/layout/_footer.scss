@@ -1,0 +1,123 @@
+// =============================================================================
+// Підвал сайту
+// =============================================================================
+
+@use '../abstracts' as *;
+
+.site-footer {
+	border-top: 1px solid $color-border;
+
+	&__inner {
+		display: grid;
+		gap: $space-xl;
+		padding-block: $space-2xl;
+
+		@include respond-to('md') {
+			grid-template-columns: repeat(2, 1fr);
+		}
+
+		@include respond-to('lg') {
+			// Перша колонка ширша — у ній логотип і опис.
+			grid-template-columns: 1.6fr 1fr 1fr 1.3fr;
+			gap: $space-2xl;
+		}
+	}
+
+	&__title {
+		@include heading-uppercase($fs-sm, $fw-medium);
+
+		margin-bottom: $space-md;
+	}
+
+	&__text {
+		margin-bottom: $space-md;
+		font-size: $fs-sm;
+		color: $color-text;
+	}
+
+	&__list {
+		display: flex;
+		flex-direction: column;
+		gap: $space-sm;
+	}
+
+	&__link {
+		font-size: $fs-sm;
+		letter-spacing: $ls-wide;
+		text-transform: uppercase;
+		color: $color-text;
+
+		&--current {
+			color: $color-primary;
+		}
+	}
+
+	&__contact {
+		display: inline-block;
+		color: $color-primary;
+		text-decoration: underline;
+	}
+
+	// -- Нижня смуга ---------------------------------------------------------
+
+	&__bottom {
+		border-top: 1px solid $color-border;
+	}
+
+	&__bottom-inner {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: $space-md $space-xl;
+		padding-block: $space-md;
+	}
+
+	&__badges {
+		display: flex;
+		align-items: center;
+		gap: $space-sm;
+	}
+
+	&__badges-label {
+		font-size: $fs-xs;
+		color: $color-muted;
+	}
+
+	&__copy {
+		margin-bottom: 0;
+		font-size: $fs-xs;
+		color: $color-muted;
+
+		@include respond-to('lg') {
+			margin-left: auto; // копірайт іде вправо, коли є місце
+		}
+
+		a {
+			color: $color-primary;
+		}
+	}
+}
+
+// Заглушки логотипів служб доставки й платіжних систем.
+// Замінити на реальні SVG, коли визначимось із платіжкою й перевізником.
+.badge {
+	padding: 2px $space-sm;
+	font-size: $fs-xs;
+	color: $color-muted;
+	border: 1px solid $color-border;
+	border-radius: $radius;
+}
+
+.socials {
+	display: flex;
+	gap: $space-md;
+
+	&__link {
+		color: $color-muted;
+		transition: color $transition;
+
+		&:hover {
+			color: $color-primary;
+		}
+	}
+}

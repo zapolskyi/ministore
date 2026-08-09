@@ -1,0 +1,37 @@
+// =============================================================================
+// style.scss — головний бандл
+// =============================================================================
+// Збирається в assets/css/style.css і підключається на ВСІХ сторінках сайту.
+// Стилів магазину тут немає — вони в окремому woocommerce.scss.
+//
+// Порядок важливий: спершу скидання, потім база, далі розкладка й компоненти.
+// Кожен партіал сам підключає токени через `@use '../abstracts' as *`,
+// тому abstracts тут перелічувати не треба.
+// =============================================================================
+
+// -- База ---------------------------------------------------------------------
+@use 'base/reset';
+@use 'base/base';
+@use 'base/typography';
+@use 'base/helpers';
+
+// -- Розкладка ----------------------------------------------------------------
+@use 'layout/container';
+@use 'layout/header';
+@use 'layout/navigation';
+@use 'layout/page-hero';
+@use 'layout/footer';
+
+// -- Компоненти ---------------------------------------------------------------
+@use 'components/buttons';
+@use 'components/forms';
+@use 'components/breadcrumbs';
+@use 'components/section-header';
+@use 'components/newsletter';
+@use 'components/pagination';
+
+// -- Секції -------------------------------------------------------------------
+@use 'sections/hero';
+@use 'sections/benefits';
+@use 'sections/featured-products';
+@use 'sections/insta';

@@ -1,0 +1,16 @@
+{
+  "name": "my-theme",
+  "version": "0.1.0",
+  "description": "MiniStore — класична тема WordPress/WooCommerce. Збірка SCSS через dart-sass.",
+  "private": true,
+  "scripts": {
+    "scss": "npm run scss:main && npm run scss:shop",
+    "scss:main": "sass assets/scss/style.scss assets/css/style.css --style=expanded",
+    "scss:shop": "sass assets/scss/woocommerce.scss assets/css/woocommerce.css --style=expanded",
+    "watch": "sass --watch assets/scss/style.scss:assets/css/style.css assets/scss/woocommerce.scss:assets/css/woocommerce.css --style=expanded",
+    "build": "sass assets/scss/style.scss:assets/css/style.css assets/scss/woocommerce.scss:assets/css/woocommerce.css --style=compressed --no-source-map"
+  },
+  "devDependencies": {
+    "sass": "^1.80.0"
+  }
+}

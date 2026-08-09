@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="600" height="600" role="img" aria-label="Заглушка зображення товару">
+	<rect width="600" height="600" fill="#eef1f3"/>
+	<path d="M262 175h76v-40h-76z" fill="#c6ced4"/>
+	<path d="M262 425h76v40h-76z" fill="#c6ced4"/>
+	<rect x="232" y="180" width="136" height="240" rx="42" fill="#fff" stroke="#c6ced4" stroke-width="5"/>
+	<path d="M300 250v50l32 18" fill="none" stroke="#c6ced4" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

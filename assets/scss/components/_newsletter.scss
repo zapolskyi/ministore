@@ -1,0 +1,72 @@
+// =============================================================================
+// Банер підписки
+// =============================================================================
+
+@use '../abstracts' as *;
+
+.newsletter {
+	padding-block: $space-xl;
+	margin-block: $space-2xl;
+	color: $color-white;
+	background-color: $color-dark;
+
+	&__inner {
+		display: flex;
+		flex-direction: column;
+		gap: $space-lg;
+
+		@include respond-to('lg') {
+			flex-direction: row;
+			align-items: center;
+			justify-content: space-between;
+			gap: $space-2xl;
+		}
+	}
+
+	&__title {
+		@include heading-uppercase($fs-lg, $fw-light);
+
+		margin-bottom: $space-xs;
+		color: $color-white;
+		letter-spacing: $ls-wide;
+	}
+
+	&__subtitle {
+		margin-bottom: 0;
+		font-size: $fs-sm;
+		color: rgba($color-white, 0.7);
+	}
+
+	&__form {
+		display: flex;
+		width: 100%;
+
+		@include respond-to('lg') {
+			max-width: 420px;
+		}
+	}
+
+	&__input {
+		flex: 1;
+		min-width: 0; // без цього flex-елемент відмовляється стискатись
+		padding: 0.7rem $space-md;
+		font-size: $fs-sm;
+		color: $color-text;
+		background-color: $color-white;
+		border: 0;
+		border-radius: $radius 0 0 $radius;
+
+		&::placeholder {
+			color: $color-muted;
+		}
+
+		&:focus {
+			outline: 2px solid $color-primary;
+			outline-offset: -2px;
+		}
+	}
+
+	&__submit {
+		border-radius: 0 $radius $radius 0;
+	}
+}

@@ -1,0 +1,39 @@
+// =============================================================================
+// Секція «Shop our insta»
+// =============================================================================
+
+@use '../abstracts' as *;
+
+.insta {
+	margin-bottom: $space-2xl;
+
+	&__grid {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: $space-md;
+
+		@include respond-to('sm') {
+			grid-template-columns: repeat(3, 1fr);
+		}
+
+		@include respond-to('lg') {
+			grid-template-columns: repeat(5, 1fr);
+		}
+	}
+
+	&__link {
+		display: block;
+		overflow: hidden;
+	}
+
+	&__image {
+		width: 100%;
+		aspect-ratio: 1;
+		object-fit: cover;
+		transition: transform 0.4s ease;
+
+		.insta__link:hover & {
+			transform: scale(1.05);
+		}
+	}
+}

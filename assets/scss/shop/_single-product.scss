@@ -1,0 +1,498 @@
+// =============================================================================
+// Сторінка товару: галерея, підсумок, вкладки, схожі товари
+// =============================================================================
+
+@use 'sass:color';
+@use '../abstracts' as *;
+
+.product {
+	display: grid;
+	gap: $space-xl;
+	padding-top: $space-2xl;
+
+	@include respond-to('lg') {
+		grid-template-columns: 1fr 1fr;
+		gap: $space-3xl;
+	}
+
+	&__gallery {
+		position: relative;
+	}
+
+	&__title {
+		@include heading-uppercase(1.75rem, $fw-light);
+
+		margin-bottom: $space-xs;
+		letter-spacing: $ls-wide;
+	}
+
+	&__rating {
+		display: flex;
+		align-items: center;
+		gap: $space-xs;
+		margin-bottom: $space-md;
+		font-size: $fs-sm;
+	}
+
+	&__stars {
+		color: $color-heading;
+	}
+
+	&__rating-value {
+		color: $color-text;
+	}
+
+	// Ціну друкує WooCommerce, тому колір задаємо і вкладеним <span>.
+	&__price {
+		margin-bottom: $space-md;
+		font-size: 2rem;
+		font-weight: $fw-regular;
+		color: $color-primary;
+
+		.woocommerce-Price-amount {
+			color: inherit;
+		}
+
+		del {
+			margin-right: $space-sm;
+			font-size: $fs-md;
+			color: $color-muted;
+		}
+	}
+
+	&__excerpt {
+		margin-bottom: $space-lg;
+		font-size: $fs-sm;
+		color: $color-text;
+	}
+
+	&__option {
+		margin-bottom: $space-lg;
+	}
+
+	// За макетом підпис підкреслений тонкою лінією рівно по ширині слова,
+	// тому inline-block — інакше рамка розтягнеться на всю колонку.
+	&__option-title {
+		@include heading-uppercase($fs-sm, $fw-regular);
+
+		display: inline-block;
+		margin-bottom: $space-sm;
+		padding-bottom: 2px;
+		color: $color-primary;
+		border-bottom: 1px solid currentColor;
+
+		label {
+			cursor: default;
+		}
+	}
+
+	&__meta {
+		font-size: $fs-sm;
+	}
+
+	&__meta-row {
+		display: flex;
+		flex-wrap: wrap;
+		gap: $space-xs;
+		margin-bottom: $space-xs;
+
+		dt {
+			color: $color-text;
+		}
+
+		dd {
+			color: $color-muted;
+		}
+
+		a:hover {
+			color: $color-primary;
+		}
+	}
+}
+
+// -- Галерея товару --------------------------------------------------------------
+// Розмітку малює woocommerce_show_product_images().
+//
+// ⚠ Woo ставить галереї інлайновий style="opacity: 0" і повертає видимість
+// своїм скриптом FlexSlider. Якщо галерея не з'явилась — шукай помилку в
+// консолі: зламався JS, а не стилі. Для випадку «JS вимкнено» Woo сам додає
+// <noscript> з правилом opacity: 1.
+
+.woocommerce-product-gallery {
+	background-color: $color-bg-soft;
+
+	&__wrapper {
+		margin: 0;
+	}
+
+	&__image,
+	&__image--placeholder {
+		img {
+			width: 100%;
+			aspect-ratio: 1;
+			object-fit: cover;
+		}
+	}
+
+	// Кнопка-лупа для відкриття фото на весь екран.
+	&__trigger {
+		position: absolute;
+		top: $space-md;
+		right: $space-md;
+		z-index: 2;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 38px;
+		height: 38px;
+		font-size: $fs-md;
+		color: $color-heading;
+		background-color: rgba($color-white, 0.9);
+		border-radius: 50%;
+		transition: color $transition;
+
+		&:hover {
+			color: $color-primary;
+		}
+	}
+
+	// Мініатюри під головним фото — їх додає FlexSlider,
+	// і лише якщо в товарі більше одного зображення.
+	.flex-control-thumbs {
+		display: flex;
+		flex-wrap: wrap;
+		gap: $space-sm;
+		margin: $space-sm 0 0;
+		padding: 0;
+		list-style: none;
+
+		li {
+			flex: 0 0 calc(25% - #{$space-sm} * 3 / 4);
+			cursor: pointer;
+		}
+
+		img {
+			width: 100%;
+			aspect-ratio: 1;
+			object-fit: cover;
+			opacity: 0.5;
+			transition: opacity $transition;
+
+			&.flex-active,
+			&:hover {
+				opacity: 1;
+			}
+		}
+	}
+}
+
+// -- Вибір кольору й розміру ---------------------------------------------------
+
+// Рідні <select> ховаємо, але НЕ вимикаємо: саме вони зберігають вибір
+// і саме їх читає скрипт варіацій WooCommerce. Приберемо їх з розмітки —
+// перестане працювати все: ціна, фото, наявність, додавання в кошик.
+//
+// Клас має збігатися з розміткою variable.php — це .product__option-field.
+// Писати його через & всередині .product__variations не можна:
+// Sass склеїть назви і вийде неіснуючий .product__variations-field.
+.product__option-field {
+	display: none;
+}
+
+.product__variations {
+	margin-bottom: $space-lg;
+
+	&-reset {
+		display: inline-block;
+		margin-top: $space-xs;
+		font-size: $fs-xs;
+		color: $color-muted;
+		text-decoration: underline;
+
+		&:hover {
+			color: $color-primary;
+		}
+	}
+}
+
+.swatches {
+	display: flex;
+	flex-wrap: wrap;
+	gap: $space-md;
+
+	&__item {
+		font-size: $fs-sm;
+		color: $color-text;
+		transition: color $transition, opacity $transition;
+
+		&:hover {
+			color: $color-primary;
+		}
+
+		// За макетом обране значення позначається лише кольором.
+		// Для тих, хто не розрізняє кольори, стан дублює aria-pressed
+		// у розмітці — його читає скрінрідер.
+		&--active {
+			color: $color-primary;
+		}
+
+		// Комбінація недоступна: Woo прибрав це значення зі списку варіантів.
+		&--unavailable {
+			opacity: 0.35;
+			text-decoration: line-through;
+			cursor: not-allowed;
+
+			&:hover {
+				color: $color-text;
+			}
+		}
+	}
+}
+
+// -- Форма додавання в кошик --------------------------------------------------
+// Розмітку тут малює WooCommerce, тому стилізуємо його класи.
+//
+// Простий товар:      form.cart > .quantity + кнопки
+// Варіативний товар:  form.cart > .variations
+//                                 .single_variation_wrap
+//                                   .woocommerce-variation          (ціна й наявність)
+//                                   .woocommerce-variation-add-to-cart > .quantity + кнопки
+//
+// Тому ряд «кількість + кнопки» описуємо для обох контейнерів одразу.
+
+.cart,
+.woocommerce-variation-add-to-cart {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: $space-sm;
+	margin-bottom: $space-lg;
+}
+
+// Форма варіативного товару складається у стовпчик:
+// свотчі, під ними ціна варіації, під нею кількість і кнопки.
+.variations_form.cart {
+	flex-direction: column;
+	align-items: stretch;
+}
+
+.single_variation_wrap {
+	display: flex;
+	flex-direction: column;
+	gap: $space-sm;
+}
+
+// Ціну й наявність обраної варіації підставляє скрипт Woo.
+.woocommerce-variation {
+	&-price .price {
+		font-size: $fs-md;
+		color: $color-primary;
+	}
+
+	&-availability p,
+	&-description p {
+		margin-bottom: 0;
+		font-size: $fs-sm;
+		color: $color-muted;
+	}
+}
+
+// Наявність простого товару: <p class="stock in-stock">2 in stock</p>
+.stock {
+	margin-bottom: $space-sm;
+	font-size: $fs-sm;
+	color: $color-muted;
+
+	&.out-of-stock {
+		color: #c0392b;
+	}
+}
+
+// -- Лічильник кількості ----------------------------------------------------------
+// Обгортку .quantity і поле .qty друкує WooCommerce,
+// кнопки додані через хуки в inc/woocommerce-setup.php.
+//
+// За макетом це ТРИ окремі рамки з проміжками, а не один злитий блок.
+
+.quantity {
+	display: flex;
+	align-items: center;
+	gap: $space-xs;
+
+	&__btn {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 42px;
+		height: 44px;
+		font-size: $fs-base;
+		color: $color-text;
+		border: 1px solid $color-border;
+		border-radius: $radius;
+		transition: color $transition, border-color $transition;
+
+		&:hover {
+			color: $color-primary;
+			border-color: $color-primary;
+		}
+	}
+
+	.qty {
+		width: 64px;
+		height: 44px;
+		text-align: center;
+		font-size: $fs-sm;
+		background: none;
+		border: 1px solid $color-border;
+		border-radius: $radius;
+
+		// Ховаємо системні стрілочки number-поля — у нас свої кнопки.
+		appearance: textfield;
+
+		&::-webkit-outer-spin-button,
+		&::-webkit-inner-spin-button {
+			appearance: none;
+			margin: 0;
+		}
+
+		&:focus {
+			outline: none;
+			border-color: $color-primary;
+		}
+	}
+}
+
+// -- Кнопки покупки ---------------------------------------------------------------
+// Обидві однакової висоти з полем кількості й однакової ширини між собою.
+
+%purchase-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 150px;
+	height: 44px;
+	padding-inline: $space-lg;
+	font-size: $fs-sm;
+	letter-spacing: $ls-wide;
+	text-transform: uppercase;
+	white-space: nowrap;
+	border: 1px solid transparent;
+	border-radius: $radius;
+	transition: background-color $transition, color $transition;
+}
+
+.single_buy_now_button {
+	@extend %purchase-button;
+
+	color: $color-white;
+	background-color: $color-primary;
+
+	&:hover {
+		color: $color-white;
+		background-color: color.adjust($color-primary, $lightness: -8%);
+	}
+}
+
+.single_add_to_cart_button {
+	@extend %purchase-button;
+
+	color: $color-white;
+	background-color: $color-dark;
+
+	&:hover {
+		color: $color-white;
+		background-color: $color-primary;
+	}
+
+	// Woo вішає цей клас, поки варіацію не обрано.
+	&.disabled,
+	&:disabled {
+		opacity: 0.4;
+		cursor: not-allowed;
+
+		&:hover {
+			background-color: $color-dark;
+		}
+	}
+}
+
+// -- Вкладки --------------------------------------------------------------------
+
+.product-tabs {
+	margin-top: $space-3xl;
+
+	&__nav {
+		display: flex;
+		flex-wrap: wrap;
+		gap: $space-xl;
+		border-bottom: 1px solid $color-border;
+	}
+
+	&__tab {
+		padding-bottom: $space-sm;
+		font-size: $fs-sm;
+		letter-spacing: $ls-wide;
+		text-transform: uppercase;
+		color: $color-text;
+		border-bottom: 2px solid transparent;
+		transition: color $transition, border-color $transition;
+
+		&:hover {
+			color: $color-primary;
+		}
+
+		&--active {
+			color: $color-primary;
+			border-bottom-color: $color-primary;
+		}
+	}
+
+	&__panel {
+		padding-top: $space-lg;
+		font-size: $fs-sm;
+
+		// Панель, у якої стоїть атрибут hidden, браузер і так не показує —
+		// але display:none у CSS перебиває його, тому дублюємо явно.
+		&[hidden] {
+			display: none;
+		}
+	}
+
+	&__title {
+		@include heading-uppercase($fs-md, $fw-medium);
+
+		margin-bottom: $space-md;
+	}
+
+	&__list {
+		margin-bottom: $space-md;
+		padding-left: $space-md;
+		list-style: disc;
+
+		li {
+			margin-bottom: $space-xs;
+		}
+	}
+
+	&__table {
+		th,
+		td {
+			padding: $space-sm $space-md;
+			text-align: left;
+			border-bottom: 1px solid $color-border;
+		}
+
+		th {
+			width: 30%;
+			font-weight: $fw-medium;
+			color: $color-heading;
+		}
+	}
+}
+
+// -- Схожі товари ----------------------------------------------------------------
+
+// Заголовок і стрічка — спільні блоки .section-bar та .products-slider.
+.related {
+	margin-top: $space-3xl;
+}

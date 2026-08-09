@@ -1,0 +1,32 @@
+// =============================================================================
+// Хлібні крихти
+// =============================================================================
+
+@use '../abstracts' as *;
+
+.breadcrumbs {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	gap: $space-xs;
+	margin-top: $space-md;
+	font-size: $fs-sm;
+
+	&__link {
+		color: $color-text;
+
+		&:hover {
+			color: $color-primary;
+		}
+	}
+
+	&__sep {
+		color: $color-muted;
+	}
+
+	&__current {
+		color: $color-primary;
+		text-decoration: underline;
+	}
+}

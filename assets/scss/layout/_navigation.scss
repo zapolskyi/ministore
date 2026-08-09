@@ -1,0 +1,121 @@
+// =============================================================================
+// Головне меню
+// =============================================================================
+// Розмітку друкує wp_nav_menu(), а BEM-класи їй дописують фільтри
+// в inc/menus.php. Стрілка підменю намальована через ::after,
+// бо wp_nav_menu() власних іконок не додає.
+// =============================================================================
+
+@use '../abstracts' as *;
+
+.site-nav {
+	// Мобільний: меню виїжджає під шапкою й приховане, доки JS не додасть is-open.
+	position: absolute;
+	top: 100%;
+	left: 0;
+	right: 0;
+	display: none;
+	padding: $space-md $container-padding;
+	background-color: $color-white;
+	border-bottom: 1px solid $color-border;
+
+	&.is-open {
+		display: block;
+	}
+
+	&__list {
+		display: flex;
+		flex-direction: column;
+		gap: $space-sm;
+	}
+
+	&__item {
+		position: relative;
+	}
+
+	&__link {
+		display: inline-flex;
+		align-items: center;
+		gap: $space-xs;
+		font-size: $fs-sm;
+		letter-spacing: $ls-wide;
+		text-transform: uppercase;
+		color: $color-heading;
+
+		&--current {
+			color: $color-primary;
+		}
+
+		&:hover {
+			color: $color-primary;
+		}
+	}
+
+	// Стрілка вниз у пунктів із вкладеним меню.
+	&__item--has-children > &__link::after {
+		content: '';
+		width: 0;
+		height: 0;
+		border-inline: 4px solid transparent;
+		border-top: 4px solid currentColor;
+		transition: transform $transition;
+	}
+
+	&__submenu {
+		display: none;
+		padding: $space-sm 0 0 $space-md;
+
+		.site-nav__link {
+			padding-block: $space-xs;
+			color: $color-text;
+		}
+	}
+
+	// Клас додає JS на мобільному, на десктопі спрацьовує :hover нижче.
+	&__item--open > &__submenu {
+		display: block;
+	}
+
+	&__item--open > &__link::after {
+		transform: rotate(180deg);
+	}
+
+	// -- Десктоп -------------------------------------------------------------
+
+	@include respond-to('lg') {
+		position: static;
+		display: block;
+		margin-left: auto;
+		padding: 0;
+		border: 0;
+
+		&__list {
+			flex-direction: row;
+			align-items: center;
+			gap: $space-xl;
+		}
+
+		&__submenu {
+			position: absolute;
+			top: 100%;
+			left: 50%;
+			z-index: $z-dropdown;
+			min-width: 170px;
+			padding: $space-sm 0;
+			background-color: $color-white;
+			border: 1px solid $color-border;
+			transform: translateX(-50%);
+
+			.site-nav__link {
+				display: block;
+				padding: $space-xs $space-md;
+			}
+		}
+
+		// На десктопі підменю відкриває наведення миші й фокус із клавіатури.
+		&__item--has-children:hover > &__submenu,
+		&__item--has-children:focus-within > &__submenu {
+			display: block;
+		}
+	}
+}

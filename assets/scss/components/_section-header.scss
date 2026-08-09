@@ -1,0 +1,41 @@
+// =============================================================================
+// Заголовок секції по центру
+// =============================================================================
+
+@use '../abstracts' as *;
+
+.section-header {
+	@include heading-uppercase($fs-lg, $fw-light);
+
+	margin-bottom: $space-xl;
+	text-align: center;
+	letter-spacing: $ls-wider;
+}
+
+// Заголовок ліворуч + посилання праворуч.
+// Один блок на дві секції: «Mobile products» на головній
+// і «Related products» на сторінці товару.
+.section-bar {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: $space-md;
+	margin-bottom: $space-lg;
+
+	&__title {
+		@include heading-uppercase($fs-lg, $fw-light);
+	}
+
+	&__link {
+		font-size: $fs-sm;
+		letter-spacing: $ls-wide;
+		text-transform: uppercase;
+		color: $color-text;
+		border-bottom: 1px solid currentColor;
+
+		&:hover {
+			color: $color-primary;
+		}
+	}
+}

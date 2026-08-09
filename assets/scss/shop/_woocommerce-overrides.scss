@@ -1,0 +1,76 @@
+// =============================================================================
+// Оформлення власної розмітки WooCommerce
+// =============================================================================
+// Частину блоків малює сам Woo — крихти, лічильник результатів, сортування,
+// повідомлення. Свою розмітку туди не підсунеш, тому просто стилізуємо
+// його класи. Це дешевше, ніж копіювати ще кілька шаблонів у тему.
+// =============================================================================
+
+@use '../abstracts' as *;
+
+// -- Хлібні крихти (nav.woocommerce-breadcrumb у плашці заголовка) -------------
+
+.woocommerce-breadcrumb {
+	margin-top: $space-md;
+	font-size: $fs-sm;
+	color: $color-text;
+
+	a {
+		color: $color-text;
+
+		&:hover {
+			color: $color-primary;
+		}
+	}
+}
+
+// -- «Showing all 9 results» ---------------------------------------------------
+
+.woocommerce-result-count {
+	margin-bottom: 0;
+	font-size: $fs-sm;
+	color: $color-muted;
+}
+
+// -- Сортування ----------------------------------------------------------------
+
+.woocommerce-ordering {
+	margin-bottom: 0;
+
+	select {
+		padding: $space-xs $space-lg $space-xs $space-sm;
+		font-size: $fs-sm;
+		color: $color-text;
+		background-color: transparent;
+		// Своя стрілка замість системної: інакше select виглядає
+		// по-різному в кожній операційній системі.
+		background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5' viewBox='0 0 8 5'%3E%3Cpath d='M0 0h8L4 5z' fill='%23575757'/%3E%3C/svg%3E");
+		background-repeat: no-repeat;
+		background-position: right $space-sm center;
+		border: 0;
+		border-radius: $radius;
+		appearance: none;
+		cursor: pointer;
+
+		&:focus {
+			outline: 2px solid $color-primary;
+			outline-offset: 2px;
+		}
+	}
+}
+
+// -- Повідомлення Woo («товарів не знайдено», «додано в кошик») ----------------
+
+.woocommerce-info,
+.woocommerce-message,
+.woocommerce-error {
+	padding: $space-md $space-lg;
+	margin-bottom: $space-lg;
+	font-size: $fs-sm;
+	background-color: $color-bg-soft;
+	border-left: 3px solid $color-primary;
+}
+
+.woocommerce-error {
+	border-left-color: #c0392b;
+}

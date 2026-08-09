@@ -1,0 +1,48 @@
+// =============================================================================
+// Міксини
+// =============================================================================
+
+@use 'sass:map';
+@use 'variables' as *;
+
+/// Медіа-запит за назвою брейкпоінта.
+///
+/// Використання:
+///   .product-grid {
+///       grid-template-columns: repeat(2, 1fr);
+///       @include respond-to('md') { grid-template-columns: repeat(3, 1fr); }
+///   }
+@mixin respond-to($breakpoint) {
+	$value: map.get($breakpoints, $breakpoint);
+
+	@if $value == null {
+		@error 'Невідомий брейкпоінт «#{$breakpoint}». Доступні: #{map.keys($breakpoints)}.';
+	}
+
+	@media (min-width: $value) {
+		@content;
+	}
+}
+
+/// Обмежувач ширини вмісту з бічними полями.
+@mixin container {
+	width: 100%;
+	max-width: $container-width;
+	margin-inline: auto;
+	padding-inline: $container-padding;
+}
+
+/// Заголовок у стилі макета: великі літери, тонке накреслення, розрядка.
+@mixin heading-uppercase($size: $fs-lg, $weight: $fw-light) {
+	font-size: $size;
+	font-weight: $weight;
+	letter-spacing: $ls-wide;
+	text-transform: uppercase;
+	color: $color-heading;
+}
+
+/// Тонка лінія-роздільник під заголовком віджета.
+@mixin underline($color: $color-heading) {
+	padding-bottom: $space-xs;
+	border-bottom: 1px solid $color;
+}

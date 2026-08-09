@@ -1,0 +1,22 @@
+// =============================================================================
+// Плашка заголовка сторінки (світло-блакитна смуга з назвою і крихтами)
+// =============================================================================
+
+@use '../abstracts' as *;
+
+.page-hero {
+	padding-block: $space-2xl;
+	margin-bottom: $space-2xl;
+	text-align: center;
+	background-color: $color-bg-hero;
+
+	&__title {
+		@include heading-uppercase($fs-xl, $fw-light);
+
+		letter-spacing: $ls-wider;
+
+		@include respond-to('md') {
+			font-size: $fs-2xl;
+		}
+	}
+}

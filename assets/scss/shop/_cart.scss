@@ -1,0 +1,309 @@
+// =============================================================================
+// Сторінка кошика
+// =============================================================================
+
+@use '../abstracts' as *;
+
+.cart-page {
+	padding-block: $space-xl $space-2xl;
+}
+
+// -- Таблиця товарів ------------------------------------------------------------
+
+.cart-table {
+	width: 100%;
+	border-collapse: collapse;
+
+	&__head {
+		padding-bottom: $space-md;
+		font-size: $fs-sm;
+		font-weight: $fw-regular;
+		letter-spacing: $ls-wide;
+		text-transform: uppercase;
+		text-align: left;
+		color: $color-heading;
+		border-bottom: 1px solid $color-border;
+
+		&--qty,
+		&--subtotal {
+			width: 20%;
+		}
+
+		&--remove {
+			width: 60px;
+		}
+	}
+
+	// На мобільному таблиця перебудовується у картки — заголовки там зайві.
+	thead {
+		display: none;
+
+		@include respond-to('md') {
+			display: table-header-group;
+		}
+	}
+}
+
+.cart-item {
+	border-bottom: 1px solid $color-border;
+
+	// -- Мобільна розкладка: кожен рядок стає карткою ---------------------------
+	display: grid;
+	grid-template-columns: 1fr auto;
+	gap: $space-sm;
+	padding-block: $space-lg;
+
+	@include respond-to('md') {
+		display: table-row;
+		padding-block: 0;
+	}
+
+	td {
+		padding-block: 0;
+
+		@include respond-to('md') {
+			padding-block: $space-lg;
+			vertical-align: middle;
+		}
+	}
+
+	// Назва колонки поруч зі значенням — тільки на вузьких екранах.
+	&__qty,
+	&__subtotal {
+		&::before {
+			content: attr(data-label) ': ';
+			font-size: $fs-xs;
+			letter-spacing: $ls-wide;
+			text-transform: uppercase;
+			color: $color-muted;
+
+			@include respond-to('md') {
+				content: none;
+			}
+		}
+	}
+
+	// -- Товар -------------------------------------------------------------------
+
+	&__product {
+		display: flex;
+		align-items: center;
+		gap: $space-md;
+		grid-column: 1 / -1;
+	}
+
+	&__thumb {
+		flex-shrink: 0;
+		width: 90px;
+		background-color: $color-bg-soft;
+
+		img {
+			width: 100%;
+			aspect-ratio: 1;
+			object-fit: cover;
+		}
+	}
+
+	&__info {
+		display: flex;
+		flex-direction: column;
+		gap: $space-xs;
+	}
+
+	&__name {
+		font-size: $fs-sm;
+		letter-spacing: $ls-wide;
+		text-transform: uppercase;
+		color: $color-heading;
+
+		&:hover {
+			color: $color-primary;
+		}
+	}
+
+	&__price {
+		font-size: $fs-sm;
+		color: $color-primary;
+	}
+
+	// -- Сума --------------------------------------------------------------------
+
+	&__subtotal {
+		font-size: $fs-md;
+		color: $color-primary;
+
+		@include respond-to('lg') {
+			font-size: $fs-lg;
+		}
+	}
+
+	// -- Видалення ---------------------------------------------------------------
+
+	&__remove {
+		text-align: right;
+	}
+
+	&__remove-link {
+		display: inline-flex;
+		color: $color-heading;
+		transition: color $transition;
+
+		&:hover {
+			color: $color-primary;
+		}
+	}
+}
+
+// Компактний лічильник — у кошику він менший, ніж на сторінці товару.
+// Розмір задаємо через батьківську комірку, щоб не плодити класи в PHP.
+.cart-item__qty .quantity {
+	.quantity__btn {
+		width: 32px;
+		height: 34px;
+		font-size: $fs-sm;
+	}
+
+	.qty {
+		width: 46px;
+		height: 34px;
+	}
+}
+
+// -- Купон і дії форми -----------------------------------------------------------
+
+.cart-page__coupon {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: $space-sm;
+	padding-top: $space-lg;
+
+	&-input {
+		width: 100%;
+		max-width: 220px;
+		padding: 0.7rem $space-md;
+		font-size: $fs-sm;
+		border: 1px solid $color-border;
+		border-radius: $radius;
+
+		&:focus {
+			outline: none;
+			border-color: $color-primary;
+		}
+	}
+}
+
+// -- Підсумки --------------------------------------------------------------------
+
+.cart-totals {
+	margin-top: $space-2xl;
+
+	&__title {
+		@include heading-uppercase($fs-lg, $fw-light);
+
+		margin-bottom: $space-lg;
+	}
+
+	&__table {
+		width: 100%;
+		border-collapse: collapse;
+	}
+
+	// Підпис і значення — спільні відступи й лінія-роздільник.
+	&__label,
+	&__value,
+	.woocommerce-shipping-totals th,
+	.woocommerce-shipping-totals td {
+		padding-block: $space-md;
+		vertical-align: top;
+		border-bottom: 1px solid $color-border;
+	}
+
+	&__label,
+	.woocommerce-shipping-totals th {
+		width: 30%;
+		text-align: left;
+		font-size: $fs-sm;
+		font-weight: $fw-regular;
+		letter-spacing: $ls-wide;
+		text-transform: uppercase;
+		color: $color-heading;
+	}
+
+	&__value {
+		font-size: $fs-sm;
+		color: $color-primary;
+
+		// Ціни Woo приходять у власних <span> — колір успадковуємо.
+		.woocommerce-Price-amount {
+			color: inherit;
+		}
+	}
+
+	// Вибір способу доставки Woo друкує власним шаблоном.
+	.woocommerce-shipping-totals {
+		td {
+			font-size: $fs-sm;
+			color: $color-text;
+		}
+
+		ul {
+			display: flex;
+			flex-direction: column;
+			gap: $space-xs;
+		}
+
+		label {
+			cursor: pointer;
+		}
+	}
+
+	&__actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: $space-md;
+		margin-top: $space-xl;
+	}
+}
+
+// Кнопку «Proceed to checkout» друкує WooCommerce власними класами.
+// Стандартні стилі Woo вимкнені (ADR-010), тому оформлюємо самі.
+.checkout-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: $space-sm;
+	padding: 0.75rem $space-lg;
+	font-size: $fs-sm;
+	letter-spacing: $ls-wide;
+	text-transform: uppercase;
+	white-space: nowrap;
+	color: $color-white;
+	background-color: $color-dark;
+	border: 1px solid transparent;
+	border-radius: $radius;
+	transition: background-color $transition;
+
+	&:hover {
+		color: $color-white;
+		background-color: $color-primary;
+	}
+}
+
+// -- Порожній кошик ---------------------------------------------------------------
+
+.cart-empty {
+	padding-block: $space-2xl $space-3xl;
+	text-align: center;
+
+	.cart-empty-message,
+	p {
+		margin-bottom: $space-lg;
+		font-size: $fs-base;
+		color: $color-text;
+	}
+
+	&__button {
+		display: inline-flex;
+	}
+}

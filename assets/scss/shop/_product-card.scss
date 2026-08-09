@@ -1,0 +1,84 @@
+// =============================================================================
+// Картка товару
+// =============================================================================
+
+@use '../abstracts' as *;
+
+.product-card {
+
+	&__media {
+		position: relative;
+		display: block;
+		overflow: hidden;
+		background-color: $color-bg-soft;
+	}
+
+	&__image {
+		width: 100%;
+		aspect-ratio: 1;
+		object-fit: cover;
+		transition: transform 0.4s ease;
+	}
+
+	// Кнопка «Add to cart» виїжджає знизу при наведенні.
+	&__add {
+		position: absolute;
+		right: $space-md;
+		bottom: $space-md;
+		left: $space-md;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: $space-sm;
+		padding: 0.6rem $space-md;
+		font-size: $fs-xs;
+		letter-spacing: $ls-wide;
+		text-transform: uppercase;
+		color: $color-white;
+		background-color: $color-dark;
+		border-radius: $radius;
+		opacity: 0;
+		transform: translateY(120%);
+		transition: transform $transition, opacity $transition;
+	}
+
+	&__media:hover &__image,
+	&__media:focus-visible &__image {
+		transform: scale(1.04);
+	}
+
+	&__media:hover &__add,
+	&__media:focus-visible &__add {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+	// На сенсорних екранах наведення не існує — показуємо кнопку одразу.
+	@media (hover: none) {
+		&__add {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	&__info {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: $space-sm;
+		margin-top: $space-md;
+	}
+
+	&__title {
+		font-size: $fs-sm;
+		font-weight: $fw-regular;
+		letter-spacing: $ls-wide;
+		text-transform: uppercase;
+	}
+
+	&__price {
+		font-size: $fs-sm;
+		color: $color-primary;
+		white-space: nowrap;
+	}
+}

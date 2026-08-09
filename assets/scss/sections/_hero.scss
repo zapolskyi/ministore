@@ -1,0 +1,105 @@
+// =============================================================================
+// Перший екран головної
+// =============================================================================
+
+@use '../abstracts' as *;
+
+.hero {
+	position: relative;
+	background-color: $color-bg-hero;
+
+	&__track {
+		display: grid;
+		grid-auto-flow: column;
+		grid-auto-columns: 100%; // один слайд = вся ширина екрана
+		overflow-x: auto;
+		scroll-snap-type: x mandatory;
+		scrollbar-width: none;
+
+		&::-webkit-scrollbar {
+			display: none;
+		}
+	}
+
+	&__slide {
+		scroll-snap-align: start;
+	}
+
+	&__inner {
+		display: flex;
+		flex-direction: column-reverse; // на мобільному картинка зверху, текст під нею
+		align-items: center;
+		gap: $space-lg;
+		padding-block: $space-xl;
+
+		@include respond-to('lg') {
+			flex-direction: row;
+			justify-content: space-between;
+			gap: $space-2xl;
+			padding-block: $space-2xl;
+		}
+	}
+
+	&__content {
+		flex: 1;
+		text-align: center;
+
+		@include respond-to('lg') {
+			text-align: left;
+		}
+	}
+
+	&__title {
+		@include heading-uppercase(2rem, $fw-light);
+
+		margin-bottom: $space-lg;
+		letter-spacing: 0.01em;
+		line-height: 1.15;
+
+		@include respond-to('md') {
+			font-size: 3rem;
+		}
+
+		@include respond-to('lg') {
+			font-size: 3.75rem;
+		}
+	}
+
+	&__media {
+		flex: 1;
+		max-width: 420px;
+	}
+
+	&__image {
+		width: 100%;
+		height: auto;
+	}
+
+	// -- Стрілки -------------------------------------------------------------
+
+	&__arrow {
+		position: absolute;
+		top: 50%;
+		z-index: 2;
+		display: none; // на вузьких екранах гортаємо пальцем, стрілки лише заважають
+		color: $color-muted;
+		transform: translateY(-50%);
+		transition: color $transition;
+
+		&:hover {
+			color: $color-primary;
+		}
+
+		&--prev {
+			left: $space-sm;
+		}
+
+		&--next {
+			right: $space-sm;
+		}
+
+		@include respond-to('lg') {
+			display: block;
+		}
+	}
+}

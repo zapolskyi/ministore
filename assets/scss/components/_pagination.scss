@@ -1,0 +1,49 @@
+// =============================================================================
+// Пагінація
+// =============================================================================
+// Один набір правил на два випадки: .woocommerce-pagination у каталозі
+// та .pagination, яку WordPress віддає для блогу через the_posts_pagination().
+// Обидві всередині використовують однакові класи .page-numbers.
+// =============================================================================
+
+@use '../abstracts' as *;
+
+.woocommerce-pagination,
+.pagination {
+	margin-top: $space-2xl;
+
+	ul,
+	.nav-links {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: center;
+		gap: $space-md;
+	}
+
+	li {
+		display: flex;
+	}
+
+	.page-numbers {
+		font-size: $fs-sm;
+		color: $color-text;
+		transition: color $transition;
+
+		&:hover {
+			color: $color-primary;
+		}
+
+		&.current {
+			color: $color-primary;
+		}
+
+		&.dots {
+			color: $color-muted;
+
+			&:hover {
+				color: $color-muted;
+			}
+		}
+	}
+}

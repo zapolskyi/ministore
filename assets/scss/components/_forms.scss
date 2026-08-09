@@ -1,0 +1,54 @@
+// =============================================================================
+// Поля форм
+// =============================================================================
+
+@use '../abstracts' as *;
+
+%field {
+	width: 100%;
+	padding: 0.7rem $space-md;
+	font-size: $fs-sm;
+	color: $color-text;
+	background-color: $color-white;
+	border: 1px solid $color-border;
+	border-radius: $radius;
+	transition: border-color $transition;
+
+	&::placeholder {
+		color: $color-muted;
+	}
+
+	&:focus {
+		border-color: $color-primary;
+		outline: none;
+	}
+}
+
+// -- Пошук у бічній панелі ----------------------------------------------------
+
+.search-form {
+	display: flex;
+
+	&__input {
+		@extend %field;
+
+		border-right: 0;
+		border-radius: $radius 0 0 $radius;
+	}
+
+	&__submit {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-shrink: 0;
+		width: 44px;
+		color: $color-white;
+		background-color: $color-dark;
+		border-radius: 0 $radius $radius 0;
+		transition: background-color $transition;
+
+		&:hover {
+			background-color: $color-primary;
+		}
+	}
+}

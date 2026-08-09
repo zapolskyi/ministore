@@ -1,0 +1,98 @@
+// =============================================================================
+// Шапка сайту
+// =============================================================================
+
+@use '../abstracts' as *;
+
+.site-header {
+	position: sticky;
+	top: 0;
+	z-index: $z-header;
+	background-color: $color-white;
+	border-bottom: 1px solid $color-border;
+
+	&__inner {
+		display: flex;
+		align-items: center;
+		gap: $space-md;
+		min-height: 68px;
+	}
+
+	&__actions {
+		display: flex;
+		align-items: center;
+		gap: $space-md;
+		margin-left: auto; // притискає іконки до правого краю
+	}
+}
+
+.logo {
+	font-size: 1.375rem;
+	font-weight: $fw-medium;
+	letter-spacing: 0.02em;
+	color: $color-heading;
+
+	&__dot {
+		color: $color-primary;
+	}
+
+	&:hover {
+		color: $color-heading;
+	}
+}
+
+.icon-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: $space-xs;
+	padding: $space-xs;
+	color: $color-heading;
+	transition: color $transition;
+
+	&:hover {
+		color: $color-primary;
+	}
+}
+
+.cart-link {
+	&__count {
+		font-size: $fs-sm;
+	}
+}
+
+// -- Бургер (тільки мобільний) ------------------------------------------------
+
+.burger {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 5px;
+	width: 28px;
+	height: 28px;
+	margin-left: auto;
+
+	&__line {
+		display: block;
+		width: 100%;
+		height: 2px;
+		background-color: $color-heading;
+		transition: transform $transition, opacity $transition;
+	}
+
+	// Стан «відкрито»: верхня і нижня лінії складаються в хрестик.
+	&[aria-expanded='true'] &__line:nth-child(1) {
+		transform: translateY(7px) rotate(45deg);
+	}
+
+	&[aria-expanded='true'] &__line:nth-child(2) {
+		opacity: 0;
+	}
+
+	&[aria-expanded='true'] &__line:nth-child(3) {
+		transform: translateY(-7px) rotate(-45deg);
+	}
+
+	@include respond-to('lg') {
+		display: none;
+	}
+}

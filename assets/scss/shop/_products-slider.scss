@@ -1,0 +1,62 @@
+// =============================================================================
+// Стрічка товарів із крапками
+// =============================================================================
+// Використовується і на головній («Mobile products»), і на сторінці товару
+// («Related products»).
+//
+// Гортання робить сам CSS: overflow-x + scroll-snap. JS лише синхронізує
+// крапки й перемотує стрічку по кліку. Бібліотека слайдера не потрібна.
+// =============================================================================
+
+@use '../abstracts' as *;
+
+.products-slider {
+
+	&__track {
+		display: grid;
+		grid-auto-flow: column;      // елементи стають у рядок, а не один під одним
+		grid-auto-columns: 70%;      // ширина однієї картки на мобільному
+		gap: $space-lg;
+		overflow-x: auto;
+		scroll-snap-type: x mandatory; // прокрутка «прилипає» до краю картки
+		scrollbar-width: none;
+
+		&::-webkit-scrollbar {
+			display: none;
+		}
+
+		@include respond-to('sm') {
+			grid-auto-columns: 45%;
+		}
+
+		@include respond-to('lg') {
+			// Чотири картки в ряд з урахуванням трьох проміжків між ними.
+			grid-auto-columns: calc(25% - #{$space-lg} * 3 / 4);
+		}
+	}
+
+	// Стрічка — це <ul>, а кожна картка приходить із content-product.php
+	// уже загорнутою у власний <li>. Тому «слайд» — це прямий нащадок треку.
+	&__track > li {
+		scroll-snap-align: start;
+	}
+}
+
+.slider-dots {
+	display: flex;
+	justify-content: center;
+	gap: $space-sm;
+	margin-top: $space-lg;
+
+	&__dot {
+		width: 8px;
+		height: 8px;
+		background-color: $color-border;
+		border-radius: 50%;
+		transition: background-color $transition;
+
+		&--active {
+			background-color: $color-primary;
+		}
+	}
+}

@@ -1,0 +1,46 @@
+// =============================================================================
+// Смуга переваг
+// =============================================================================
+
+@use '../abstracts' as *;
+
+.benefits {
+	padding-block: $space-2xl;
+
+	&__grid {
+		display: grid;
+		gap: $space-lg;
+
+		@include respond-to('sm') {
+			grid-template-columns: repeat(2, 1fr);
+		}
+
+		@include respond-to('lg') {
+			grid-template-columns: repeat(4, 1fr);
+			gap: $space-xl;
+		}
+	}
+
+	&__item {
+		display: flex;
+		align-items: flex-start;
+		gap: $space-sm;
+	}
+
+	&__icon {
+		flex-shrink: 0;
+		color: $color-primary;
+	}
+
+	&__title {
+		@include heading-uppercase($fs-sm, $fw-medium);
+
+		margin-bottom: $space-xs;
+	}
+
+	&__text {
+		margin-bottom: 0;
+		font-size: $fs-xs;
+		color: $color-muted;
+	}
+}

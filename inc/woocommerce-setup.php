@@ -146,6 +146,32 @@ add_action( 'woocommerce_after_quantity_input_field', 'mytheme_quantity_plus_but
  * і в variation-add-to-cart-button.php, тому кнопка з'явиться на обох типах товару.
  */
 function mytheme_buy_now_button() {
+	global $product;
+
+	if ( ! $product instanceof WC_Product ) {
+		return;
+	}
+
+	/**
+	 * Приховане поле з ID товару — обов'язкове для ПРОСТИХ товарів.
+	 *
+	 * У шаблоні simple.php ID передає сама кнопка «Add to cart»:
+	 *     <button type="submit" name="add-to-cart" value="31">
+	 *
+	 * А форма відправляє name/value лише тієї кнопки, яку натиснули.
+	 * Тобто при кліку на «Buy Now» параметр add-to-cart не йшов узагалі,
+	 * і товар просто не додавався.
+	 *
+	 * У варіативних товарів таке поле вже є у власному шаблоні Woo,
+	 * тому там дублювати його не треба.
+	 */
+	if ( $product->is_type( 'simple' ) ) {
+		printf(
+			'<input type="hidden" name="add-to-cart" value="%d">',
+			absint( $product->get_id() )
+		);
+	}
+
 	printf(
 		'<button type="submit" name="mytheme_buy_now" value="1" class="btn btn--primary single_buy_now_button">%s</button>',
 		esc_html__( 'Buy Now', 'my-theme' )

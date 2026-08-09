@@ -3,161 +3,159 @@
  * Оформлення замовлення.
  *
  * Оверрайд woocommerce/templates/checkout/form-checkout.php.
- *
- * Поки що ЛИШЕ ВЕРСТКА: поля статичні, підсумки статичні.
- * PHP накладемо наступним кроком.
+ * Причина: власна двоколонкова розкладка й окремий блок вибору доставки.
  *
  * ⚠ Сторінка має містити шорткод [woocommerce_checkout], а не блок
  *   wp:woocommerce/checkout — інакше цей шаблон не використовується.
  *
- * ВІДМІННОСТІ ВІД МАКЕТА — свідомі, під український магазин:
- *   прибрано Company, Country, Street address, State, ZIP Code;
- *   натомість вибір способу доставки й поля Нової Пошти.
- *   Адреса потрібна лише для кур'єрської доставки, а на відділення
- *   вистачає міста й номера відділення.
+ * ЩО ЗМІНЕНО ПРОТИ МАКЕТА — свідомо, під український магазин:
+ * прибрано Company, Country, Street address, State, ZIP Code
+ * (див. inc/checkout.php). Замість них — вибір доставки й поля Нової Пошти.
  *
  * @package my-theme
+ *
+ * @var WC_Checkout $checkout Об'єкт оформлення, передає WooCommerce.
  */
 
 defined( 'ABSPATH' ) || exit;
+
+do_action( 'woocommerce_before_checkout_form', $checkout );
+
+// Магазин може вимагати реєстрацію — тоді форми не буде взагалі.
+if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_required() && ! is_user_logged_in() ) {
+	echo esc_html( apply_filters( 'woocommerce_checkout_must_be_logged_in_message', __( 'You must be logged in to checkout.', 'woocommerce' ) ) );
+	return;
+}
 ?>
 
 <div class="checkout-page">
 
-	<form class="checkout-page__form" action="#" method="post">
+	<?php // Класи checkout і woocommerce-checkout обов'язкові: за ними працює JS Woo. ?>
+	<form
+		name="checkout"
+		method="post"
+		class="checkout woocommerce-checkout checkout-page__form"
+		action="<?php echo esc_url( wc_get_checkout_url() ); ?>"
+		enctype="multipart/form-data"
+	>
 
-		<div class="checkout-page__cols">
+		<?php if ( $checkout->get_checkout_fields() ) : ?>
 
-			<section class="checkout-page__col">
-				<h2 class="checkout-page__title">Billing details</h2>
+			<?php do_action( 'woocommerce_checkout_before_customer_details' ); ?>
 
-				<p class="form-row">
-					<label for="billing_first_name">First name <abbr class="required" title="обов'язкове">*</abbr></label>
-					<input type="text" id="billing_first_name" name="billing_first_name" required>
-				</p>
+			<div class="checkout-page__cols">
 
-				<p class="form-row">
-					<label for="billing_last_name">Last name <abbr class="required" title="обов'язкове">*</abbr></label>
-					<input type="text" id="billing_last_name" name="billing_last_name" required>
-				</p>
+				<section class="checkout-page__col" id="customer_details">
+					<?php
+					/**
+					 * Поля покупця.
+					 *
+					 * Розмітку полів малює сам WooCommerce за списком, який ми
+					 * підрізали фільтром woocommerce_checkout_fields в inc/checkout.php.
+					 */
+					do_action( 'woocommerce_checkout_billing' );
+					?>
+				</section>
 
-				<p class="form-row">
-					<label for="billing_phone">Phone <abbr class="required" title="обов'язкове">*</abbr></label>
-					<input type="tel" id="billing_phone" name="billing_phone" placeholder="+380" required>
-				</p>
+				<section class="checkout-page__col">
+					<?php
+					/**
+					 * Додаткова інформація — коментар до замовлення.
+					 *
+					 * Це той самий хук, що зазвичай малює адресу доставки.
+					 * Оскільки адреса нам не потрібна, лишається тільки блок
+					 * «Additional information» з полем нотатки — рівно як у макеті.
+					 */
+					do_action( 'woocommerce_checkout_shipping' );
+					?>
+				</section>
 
-				<p class="form-row">
-					<label for="billing_email">Email address <abbr class="required" title="обов'язкове">*</abbr></label>
-					<input type="email" id="billing_email" name="billing_email" required>
-				</p>
-			</section>
+			</div>
 
-			<section class="checkout-page__col">
-				<h2 class="checkout-page__title">Additional information</h2>
+			<?php do_action( 'woocommerce_checkout_after_customer_details' ); ?>
 
-				<p class="form-row">
-					<label for="order_comments">Order notes (optional)</label>
-					<textarea id="order_comments" name="order_comments" rows="5"
-						placeholder="Notes about your order, i.e. special notes for delivery"></textarea>
-				</p>
-			</section>
-
-		</div>
+		<?php endif; ?>
 
 		<?php
 		/**
 		 * Спосіб доставки.
 		 *
-		 * Перемикання блоків робить JS (initCheckoutShipping у main.js) —
-		 * це стан інтерфейсу, він не залежить від сервера.
+		 * Виносимо з таблиці підсумків в окремий блок за макетом. Це безпечно:
+		 * checkout.js слухає зміни делегованим обробником на всій формі
+		 * (input[name^="shipping_method"]), тому позиція в розмітці не важлива.
 		 *
-		 * Коли накладемо PHP, радіокнопки замінить справжній список
-		 * способів доставки з зони «Україна».
+		 * Головне — зберегти імена та класи, за якими він чіпляється.
 		 */
+		$packages = WC()->shipping()->get_packages();
 		?>
-		<section class="checkout-shipping">
-			<h2 class="checkout-page__title">Доставка</h2>
 
-			<div class="checkout-shipping__methods">
-				<label class="radio-option">
-					<input type="radio" name="shipping_method" value="nova_poshta" checked
-						data-shipping-toggle="delivery">
-					<span class="radio-option__label">Нова Пошта</span>
-				</label>
+		<?php if ( WC()->cart->needs_shipping() && $packages ) : ?>
+			<section class="checkout-shipping">
+				<h2 class="checkout-page__title"><?php esc_html_e( 'Доставка', 'my-theme' ); ?></h2>
 
-				<label class="radio-option">
-					<input type="radio" name="shipping_method" value="pickup"
-						data-shipping-toggle="pickup">
-					<span class="radio-option__label">Самовивіз</span>
-				</label>
-			</div>
+				<?php foreach ( $packages as $index => $package ) : ?>
+					<?php
+					$available = $package['rates'];
+					$chosen    = WC()->session->get( 'chosen_shipping_methods' )[ $index ] ?? '';
+					?>
+					<div class="checkout-shipping__methods">
+						<?php foreach ( $available as $rate_id => $rate ) : ?>
+							<label class="radio-option" for="shipping_method_<?php echo esc_attr( $index . '_' . sanitize_title( $rate_id ) ); ?>">
+								<input
+									type="radio"
+									name="shipping_method[<?php echo esc_attr( $index ); ?>]"
+									id="shipping_method_<?php echo esc_attr( $index . '_' . sanitize_title( $rate_id ) ); ?>"
+									value="<?php echo esc_attr( $rate_id ); ?>"
+									class="shipping_method"
+									<?php checked( $rate_id, $chosen ); ?>
+								>
+								<span class="radio-option__label">
+									<?php echo wp_kses_post( wc_cart_totals_shipping_method_label( $rate ) ); ?>
+								</span>
+							</label>
+						<?php endforeach; ?>
+					</div>
+				<?php endforeach; ?>
 
-			<div class="checkout-shipping__fields" data-shipping-fields="delivery">
-				<p class="form-row">
-					<label for="np_city">Місто <abbr class="required" title="обов'язкове">*</abbr></label>
-					<input type="text" id="np_city" name="np_city" placeholder="Почніть вводити назву міста" required>
-				</p>
+				<?php
+				// Поля Нової Пошти. Показ і приховування — на JS,
+				// обов'язковість перевіряється на сервері (inc/checkout.php).
+				?>
+				<div class="checkout-shipping__fields" data-shipping-fields="nova-poshta">
+					<?php mytheme_nova_poshta_fields(); ?>
+				</div>
 
-				<p class="form-row">
-					<label for="np_warehouse">Відділення <abbr class="required" title="обов'язкове">*</abbr></label>
-					<select id="np_warehouse" name="np_warehouse" required>
-						<option value="">Спершу оберіть місто</option>
-					</select>
-				</p>
-			</div>
+				<div class="checkout-shipping__fields" data-shipping-fields="pickup" hidden>
+					<p class="checkout-shipping__pickup-address">
+						<strong><?php esc_html_e( 'Самовивіз зі складу', 'my-theme' ); ?></strong><br>
+						м. Київ, вул. Прикладна, 1<br>
+						Пн–Пт 10:00–19:00, Сб 10:00–16:00
+					</p>
+				</div>
+			</section>
+		<?php endif; ?>
 
-			<div class="checkout-shipping__fields" data-shipping-fields="pickup" hidden>
-				<p class="checkout-shipping__pickup-address">
-					<strong>Самовивіз зі складу</strong><br>
-					м. Київ, вул. Прикладна, 1<br>
-					Пн–Пт 10:00–19:00, Сб 10:00–16:00
-				</p>
-			</div>
-		</section>
+		<?php do_action( 'woocommerce_checkout_before_order_review_heading' ); ?>
 
-		<section class="cart-totals checkout-totals">
+		<h2 class="cart-totals__title" id="order_review_heading"><?php esc_html_e( 'Cart Totals', 'my-theme' ); ?></h2>
 
-			<h2 class="cart-totals__title">Cart Totals</h2>
+		<?php do_action( 'woocommerce_checkout_before_order_review' ); ?>
 
-			<table class="cart-totals__table">
-				<tbody>
-					<tr class="cart-totals__row">
-						<th class="cart-totals__label">Subtotal</th>
-						<td class="cart-totals__value">$1500.00</td>
-					</tr>
-					<tr class="cart-totals__row cart-totals__row--total">
-						<th class="cart-totals__label">Total</th>
-						<td class="cart-totals__value">$1500.00</td>
-					</tr>
-				</tbody>
-			</table>
+		<?php // id="order_review" обов'язковий: саме цей блок Woo оновлює через AJAX. ?>
+		<div id="order_review" class="woocommerce-checkout-review-order checkout-totals">
+			<?php
+			/**
+			 * @hooked woocommerce_order_review - 10      таблиця підсумків
+			 * @hooked woocommerce_checkout_payment - 20  оплата й кнопка замовлення
+			 */
+			do_action( 'woocommerce_checkout_order_review' );
+			?>
+		</div>
 
-			<div class="checkout-payment">
-				<label class="radio-option">
-					<input type="radio" name="payment_method" value="bacs" checked>
-					<span class="radio-option__label">Direct bank transfer</span>
-				</label>
-
-				<label class="radio-option">
-					<input type="radio" name="payment_method" value="cheque">
-					<span class="radio-option__label">Check payments</span>
-				</label>
-
-				<label class="radio-option">
-					<input type="radio" name="payment_method" value="cod">
-					<span class="radio-option__label">Cash on delivery</span>
-				</label>
-
-				<label class="radio-option">
-					<input type="radio" name="payment_method" value="paypal">
-					<span class="radio-option__label">PayPal</span>
-				</label>
-			</div>
-
-			<button class="btn btn--dark checkout-page__submit" type="submit">Place an order</button>
-
-		</section>
+		<?php do_action( 'woocommerce_checkout_after_order_review' ); ?>
 
 	</form>
 
 </div>
+
+<?php do_action( 'woocommerce_after_checkout_form', $checkout ); ?>

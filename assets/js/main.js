@@ -331,40 +331,60 @@
 	/**
 	 * Перемикання блоків доставки на оформленні.
 	 *
-	 * Радіокнопка несе data-shipping-toggle зі значенням, а блоки полів —
-	 * data-shipping-fields. Показуємо той блок, значення якого збіглося.
+	 * Радіокнопки малює WooCommerce зі справжніх способів доставки зони,
+	 * тому їхні значення виглядають як «flat_rate:2» або «local_pickup:3».
+	 * Нас цікавить частина до двокрапки — це тип методу.
 	 *
-	 * Це суто стан інтерфейсу, тому чистий JS без участі сервера.
-	 * Коли підключимо реальні способи доставки, сюди прийдуть значення
-	 * з зони доставки, а логіка перемикання лишиться та сама.
+	 * Показуємо блок, у якого data-shipping-fields збігся з типом.
+	 * Приховані поля знімаємо з валідації, інакше форма не відправиться
+	 * через невидиме обов'язкове поле.
+	 *
+	 * Обробник делегований на форму: Woo перемальовує частину розмітки
+	 * через AJAX, і прямі слухачі на радіокнопках після цього губляться.
 	 */
 	function initCheckoutShipping() {
-		const toggles = document.querySelectorAll('[data-shipping-toggle]');
-		const blocks = document.querySelectorAll('[data-shipping-fields]');
+		const form = document.querySelector('form.checkout');
 
-		if (toggles.length === 0 || blocks.length === 0) {
+		if (!form) {
 			return;
 		}
 
-		function sync() {
-			const checked = document.querySelector('[data-shipping-toggle]:checked');
-			const active = checked ? checked.dataset.shippingToggle : null;
+		function methodType() {
+			const checked = form.querySelector('input[name^="shipping_method"]:checked');
 
-			blocks.forEach(function (block) {
+			if (!checked) {
+				return null;
+			}
+
+			const id = checked.value.split(':')[0];
+
+			return id === 'local_pickup' || id === 'pickup_location' ? 'pickup' : 'nova-poshta';
+		}
+
+		function sync() {
+			const active = methodType();
+
+			form.querySelectorAll('[data-shipping-fields]').forEach(function (block) {
 				const isActive = block.dataset.shippingFields === active;
 
 				block.hidden = !isActive;
 
-				// Приховані поля не мають блокувати відправку форми.
-				block.querySelectorAll('[required]').forEach(function (field) {
+				block.querySelectorAll('input, select, textarea').forEach(function (field) {
 					field.disabled = !isActive;
 				});
 			});
 		}
 
-		toggles.forEach(function (toggle) {
-			toggle.addEventListener('change', sync);
+		form.addEventListener('change', function (event) {
+			if (event.target.name && event.target.name.indexOf('shipping_method') === 0) {
+				sync();
+			}
 		});
+
+		// Woo оновлює підсумки через AJAX — після цього стан треба звірити знову.
+		if (window.jQuery) {
+			window.jQuery(document.body).on('updated_checkout', sync);
+		}
 
 		sync();
 	}

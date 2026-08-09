@@ -972,4 +972,57 @@
   margin-top: 1.5rem;
 }
 
+.woocommerce-billing-fields > h3,
+.woocommerce-additional-fields > h3 {
+  font-size: 1.125rem;
+  font-weight: 300;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #1f1f1f;
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.08em;
+}
+
+.wc_payment_methods {
+  margin-bottom: 1.5rem;
+}
+.wc_payment_methods > li {
+  padding-block: 0.25rem;
+}
+.wc_payment_methods label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  color: #575757;
+  cursor: pointer;
+}
+.wc_payment_methods input[type=radio] {
+  width: 14px;
+  height: 14px;
+  accent-color: #5b9bc4;
+}
+.wc_payment_methods .payment_box {
+  margin: 0.25rem 0 0.5rem 1.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.75rem;
+  color: #9a9a9a;
+  background-color: #f4f6f7;
+  border-radius: 2px;
+}
+.wc_payment_methods .payment_box p:last-child {
+  margin-bottom: 0;
+}
+
+.woocommerce-terms-and-conditions-wrapper {
+  margin-bottom: 1rem;
+  font-size: 0.75rem;
+  color: #9a9a9a;
+}
+
+.woocommerce-invalid input,
+.woocommerce-invalid select {
+  border-color: #c0392b;
+}
+
 /*# sourceMappingURL=woocommerce.css.map */

@@ -22,4 +22,5 @@ require_once MYTHEME_DIR . '/inc/menus.php';
 // WooCommerce поклало б увесь сайт з fatal error.
 if ( class_exists( 'WooCommerce' ) ) {
 	require_once MYTHEME_DIR . '/inc/woocommerce-setup.php';
+	require_once MYTHEME_DIR . '/inc/checkout.php';
 }

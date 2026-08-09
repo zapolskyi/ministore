@@ -145,3 +145,66 @@
 .checkout-payment {
 	margin-top: $space-lg;
 }
+
+// -- Розмітка полів від WooCommerce ------------------------------------------------
+// Заголовки колонок і обгортки друкує сам Woo, тому оформлюємо його класи.
+
+.woocommerce-billing-fields,
+.woocommerce-additional-fields {
+	> h3 {
+		@include heading-uppercase($fs-md, $fw-light);
+
+		margin-bottom: $space-lg;
+		letter-spacing: $ls-wide;
+	}
+}
+
+// Способи оплати
+.wc_payment_methods {
+	margin-bottom: $space-lg;
+
+	> li {
+		padding-block: $space-xs;
+	}
+
+	label {
+		display: inline-flex;
+		align-items: center;
+		gap: $space-sm;
+		font-size: $fs-sm;
+		color: $color-text;
+		cursor: pointer;
+	}
+
+	input[type='radio'] {
+		width: 14px;
+		height: 14px;
+		accent-color: $color-primary;
+	}
+
+	// Пояснення способу оплати — Woo показує його під обраним варіантом.
+	.payment_box {
+		margin: $space-xs 0 $space-sm 1.5rem;
+		padding: $space-sm $space-md;
+		font-size: $fs-xs;
+		color: $color-muted;
+		background-color: $color-bg-soft;
+		border-radius: $radius;
+
+		p:last-child {
+			margin-bottom: 0;
+		}
+	}
+}
+
+.woocommerce-terms-and-conditions-wrapper {
+	margin-bottom: $space-md;
+	font-size: $fs-xs;
+	color: $color-muted;
+}
+
+// Повідомлення про помилки полів
+.woocommerce-invalid input,
+.woocommerce-invalid select {
+	border-color: #c0392b;
+}
